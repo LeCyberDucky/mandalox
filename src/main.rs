@@ -1,32 +1,68 @@
-use iced::{Container, Element, Image, Length, Sandbox, Settings};
+use iced::{image, Column, Container, Element, Image, Length, Sandbox, Settings};
 
 fn main() {
     Mandalox::run(Settings::default())
 }
 
-struct Mandalox;
+// Application state
+// #[derive(Default)] // We create own default below
+struct Mandalox {
+    // background: Image,
+    background: image::Handle,
+}
+
+impl Default for Mandalox {
+    fn default() -> Mandalox {
+        Mandalox {
+            // background: Image::new("bridge.jpg"),
+            background: image::Handle::from_path("bridge.jpg"),
+        }
+    }
+}
+
+// User interactions and commands: Messages
+#[derive(Debug, Clone, Copy)]
+pub enum Message {
+    LeftClick,
+    // RightClick,
+    // LeftDrag,
+    // RightDrag,
+    // ScrollUp,
+    // ScrollDown,
+    // Space,
+}
+
 
 impl Sandbox for Mandalox {
-    type Message = ();
+    type Message = Message;
 
+    // Initialize application
     fn new() -> Self {
-        Mandalox
+        Self::default()
     }
 
     fn title(&self) -> String {
         String::from("Mandalox")
     }
 
-    fn update(&mut self, _message: ()) {
-
+    // Update logic
+    // Handles messages (user interactions or commands) and updates state of application
+    fn update(&mut self, message: Message) {
+        match message {
+            Message::LeftClick => {
+                println!("Click!");
+            }
+        }
     }
 
-    fn view(&mut self) -> Element<()> {
-        let background = Image::new("bridge.jpg")
-            .width(Length::Fill)
-            .height(Length::Fill);
+    // Returns the widgets to display in the application 
+    // Widgets can produce messages based on user interaction
+    fn view(&mut self) -> Element<Message> {
+        let content = Column::new()
+            // TODO: Figure out if this keeps loading image from disk. Is this necessary? 
+            .push(Image::new(self.background.clone()));
 
-        Container::new(background)
+        Container::new(content)
             .width(Length::Fill)
             .height(Length::Fill)
             .center_x()
